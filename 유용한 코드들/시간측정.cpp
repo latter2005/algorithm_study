@@ -16,3 +16,16 @@
 	CHECK_TIME_END(time, b);
 	printf("time : %lf\n", time);
 
+
+	double time;
+	bool b;
+	__int64 freq, start, end; 
+	BOOL condition; 
+	if (condition = QueryPerformanceFrequency((_LARGE_INTEGER*)&freq))  
+		QueryPerformanceCounter((_LARGE_INTEGER*)&start);
+	
+	if (condition) {
+		QueryPerformanceCounter((_LARGE_INTEGER*)&end);  
+		time=(float)((double)(end - start)/freq*1000); 
+		printf("time : %lf\n", time);
+	}
