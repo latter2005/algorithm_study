@@ -1,4 +1,4 @@
-﻿//segment tree iterative 버전
+﻿//segment tree recursive, lazy propagation
 #include <cstdio>
 #include <vector>
 #include <queue>
@@ -30,8 +30,8 @@ void update_lazy(vector<int> &tree, vector<int> &lazy, int node, int start, int 
 		tree[node] += (end - start + 1)*lazy[node];
 		// leaf가 아니면
 		if (start != end) {
-			lazy[node * 2] += lazy[node];
-			lazy[node * 2 + 1] += lazy[node];
+			lazy[node << 1] += lazy[node];
+			lazy[(node << 1) + 1] += lazy[node];
 		}
 		lazy[node] = 0;
 	}
@@ -44,14 +44,14 @@ void update_range(vector<int> &tree, vector<int> &lazy, int node, int start, int
 	if (left <= start && end <= right) {
 		tree[node] += (end - start + 1)*diff;
 		if (start != end) {
-			lazy[node * 2] += diff;
-			lazy[node * 2 + 1] += diff;
+			lazy[node << 1] += diff;
+			lazy[node << 1 + 1] += diff;
 		}
 		return;
 	}
-	update_range(tree, lazy, node * 2, start, (start + end) / 2, left, right, diff);
-	update_range(tree, lazy, node * 2 + 1, (start + end) / 2 + 1, end, left, right, diff);
-	tree[node] = tree[node * 2] + tree[node * 2 + 1];
+	update_range(tree, lazy, node << 1, start, (start + end) / 2, left, right, diff);
+	update_range(tree, lazy, node << 1 + 1, (start + end) / 2 + 1, end, left, right, diff);
+	tree[node] = tree[node << 1] + tree[node << 1 + 1];
 }
 int sum(vector<int> &tree, vector<int> &lazy, int node, int start, int end, int left, int right) {
 	update_lazy(tree, lazy, node, start, end);
@@ -61,7 +61,7 @@ int sum(vector<int> &tree, vector<int> &lazy, int node, int start, int end, int 
 	if (left <= start && end <= right) {
 		return tree[node];
 	}
-	return sum(tree, lazy, node * 2, start, (start + end) / 2, left, right) + sum(tree, lazy, node * 2 + 1, (start + end) / 2 + 1, end, left, right);
+	return sum(tree, lazy, node << 1, start, (start + end) / 2, left, right) + sum(tree, lazy, node << 1 + 1, (start + end) / 2 + 1, end, left, right);
 }
 
 int solution(vector<int> arr) {
