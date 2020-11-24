@@ -11,14 +11,12 @@ typedef struct node {
 node *binomial_heap;
 void merge_tree(node *a, node* b) {//merge tree a <- b
 	node *prev = NULL;
-	for (; a ; prev = a, a = a->right) {
-		if (a->degree <= b->degree)
-			break;
-	}
+	for (; a && a->degree < b->degree; prev = a, a = a->right);
 	if (!a) {
 		prev->right = b;
+		b->right = NULL;
 	}
-	else if (a->degree != b->degree) {//insert
+	else if (a->degree != b->degree) {//insert middle or end
 		if (prev)
 			prev->right = b;
 		b->right = a;
@@ -39,37 +37,12 @@ void merge_tree(node *a, node* b) {//merge tree a <- b
 			}
 			else {
 				a->degree++;
+				a->right = b->right;
 				b->right = a->down;
 				a->down = b;
 				b = a->right;
 			}
 		}
-	}
-}
-void merge_heap(node *a, node *b) {//merge heap(set of tree) a <- b
-	node *prev = NULL, *tmp;
-	while (b) {
-		tmp = b->right;
-		if (a->degree == b->degree) {//
-			if (a->key > b->key) {
-				b->right = a->right;
-				if (prev)
-					prev->right = b;
-
-				a->right = b->down;
-				b->down = a;
-				prev = b;
-			}
-			else {
-				a->degree++;
-				b->right = a->down;
-				a->down = b;
-				prev = a;
-			}
-			node *check = prev;
-			
-		}
-		b = tmp;
 	}
 }
 
@@ -85,9 +58,29 @@ void insert(int key){
 	}
 }
 void pop() {
-
+	node *cur = binomial_heap, *min = binomial_heap, *prev = NULL, *min_prev = NULL;
+	while (cur) {//find min root
+		if (min->key > cur->key) {
+			min = cur;
+			min_prev = prev;
+		}
+		prev = cur;
+		cur = cur->right;
+	}
+	if (min_prev)
+		min_prev->right = min->right;
+	else //front node
+		binomial_heap = min->right;
+	
+	cur = min->down;
+	delete min;//delete root
+	while (cur) {//merge heap and children
+		prev = cur;
+		cur = cur->right;
+		merge_tree(binomial_heap, prev);//
+	}
 }
-void print() {
+void print() {//level order
 	node* cur = binomial_heap;
 	queue<node*> que;
 	while (cur) {
@@ -132,25 +125,38 @@ int main() {
 }
 
 /*
-1 1
-1 2
-1 3
-1 4
 1 5
+1 4
+1 3
+1 2
+1 1
 1 6
 1 7
 1 8
 1 9
 1 10
-1 11
-1 12
-1 13
-1 14
 1 15
+1 14
+1 13
+1 12
+1 11
 1 16
 1 17
 1 18
 1 19
 1 20
-3
+1 25
+1 24
+1 23
+1 22
+1 21
+1 26
+1 27
+1 28
+1 29
+1 30
+1 31
+1 32
+1 33
+2 3
 */
