@@ -58,6 +58,10 @@ void insert(int key){
 	}
 }
 void pop() {
+	if (!binomial_heap) {
+		printf("heap is empty\n");
+		return;
+	}
 	node *cur = binomial_heap, *min = binomial_heap, *prev = NULL, *min_prev = NULL;
 	while (cur) {//find min root
 		if (min->key > cur->key) {
@@ -69,15 +73,22 @@ void pop() {
 	}
 	if (min_prev)
 		min_prev->right = min->right;
-	else //front node
+	else//front node
 		binomial_heap = min->right;
 	
+
 	cur = min->down;
 	delete min;//delete root
 	while (cur) {//merge heap and children
 		prev = cur;
 		cur = cur->right;
-		merge_tree(binomial_heap, prev);//
+		if (!binomial_heap || binomial_heap->degree) {//empty root or doesn't have 0 degree
+			prev->right = binomial_heap;
+			binomial_heap = prev;
+		}
+		else {//merge in order starting with a binomial tree with zero degree
+			merge_tree(binomial_heap, prev);
+		}
 	}
 }
 void print() {//level order
@@ -125,6 +136,10 @@ int main() {
 }
 
 /*
+1 
+
+
+
 1 5
 1 4
 1 3
@@ -157,6 +172,5 @@ int main() {
 1 30
 1 31
 1 32
-1 33
 2 3
 */
