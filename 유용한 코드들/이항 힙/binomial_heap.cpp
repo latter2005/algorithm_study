@@ -1,4 +1,5 @@
-﻿#include <cstdio>
+﻿//설명 : https://latter2005.tistory.com/14
+#include <cstdio>
 #include <queue>
 using namespace std;
 typedef struct node {
