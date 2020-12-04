@@ -1,29 +1,26 @@
 ﻿#include <iostream>
 #include <string>
-
-#include <algorithm>
-#include <queue>
+#include <math.h>
 using namespace std;
-
 int cnt;
 void calc(int cur, int plus) {
-	if (cur < 1 || 2 * log(cur) / log(3) < plus) return;
+	if (cur < 3 || ((int)(log(cur) / log(3)) << 1) < plus) return;
 	if (cur == 3) {
-		if (plus ==  2) cnt++;
+		if (plus == 2) cnt++;
 		return;
 	}
-	
-	if (cur % 3 == 0 && plus>1) 
+
+	if (cur % 3 == 0 && plus > 1)
 		calc(cur / 3, plus - 2);
 	calc(cur - 1, plus + 1);
-	
+
 }
 
 int solution(int n) {
+	cnt = 0;
 	calc(n - 2, 2);
 	return cnt;
 }
-
 
 
 int main() {
