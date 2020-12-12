@@ -1,3 +1,9 @@
+//c++
+
+cin.tie(NULL);
+ios::sync_with_stdio(false);
+
+
 //윈도우
 class fast_io {
 public:
