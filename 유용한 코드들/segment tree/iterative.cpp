@@ -6,15 +6,8 @@
 using namespace std;
 #define MAZ_SIZE 10000
 
-/*
-H : log(N)(올림)
-8 -> 3, 2^4-1 = 15
-9 -> 4, 2^5-1 = 31
-1000 -> 10, 2^11-1 = 2047
-10000 -> 14, 2^15-1
-node 개수 : 2^(H+1)-1
-*/
-int tree[(2 << 15) - 1];
+
+int tree[MAZ_SIZE * 2];
 vector<int> *arr_ptr;
 int n;
 inline void init(vector<int> &arr) { // 트리 순서가 알고리즘이랑 조금 다름
@@ -26,7 +19,7 @@ inline void init(vector<int> &arr) { // 트리 순서가 알고리즘이랑 조�
 }
 int query(int l, int r) {  // sum on interval [l, r)
 	int res = 0;
-	for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+	for (l += n - 1, r += n; l < r; l >>= 1, r >>= 1) {
 		if (l & 1) res += tree[l++];
 		if (r & 1) res += tree[--r];
 	}
@@ -44,6 +37,6 @@ int solution(vector<int> arr) {
 }
 
 int main() {
-	vector<int> arr = { 1, 7, 5, 6, 10 };
+	vector<int> arr = { 1, 7, 5, 6, 10 };//1~5
 	printf("%d", solution(arr));
 }
