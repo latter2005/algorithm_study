@@ -10,9 +10,9 @@ using namespace std;
 H : log(N)(올림)
 8 -> 3, 2^4-1 = 15
 9 -> 4, 2^5-1 = 31
-node 개수 : 2^(H+1)-1
+node 개수 : 2^(H+1)
 int h = (int)ceil(log2(n));
-int tree_size = (1 << (h+1)) - 1;
+int tree_size = (1 << (h+1));
 */
 
 
@@ -68,7 +68,7 @@ int solution(vector<int> arr) {
 	int answer = 1;
 	int arr_size = arr.size();
 	int h = (int)ceil(log2(arr_size));
-	int tree_size = (1 << (h + 1)) - 1;
+	int tree_size = (1 << (h + 1));
 	vector<int> tree(tree_size);
 	vector<int> lazy(tree_size);
 	init(arr, tree, 1, 0, arr_size-1);

@@ -1,24 +1,21 @@
-﻿//segment tree recursive, lazy propagation
-#include <cstdio>
+﻿#include <cstdio>
 #include <vector>
 #include <queue>
 #include <cmath>
 using namespace std;
-#define MAX_SIZE 100000
-
-/*
-H : log(N)(올림)
-8 -> 3, 2^4-1 = 15
-9 -> 4, 2^5-1 = 31
-node 개수 : 2^(H+1)-1
-int h = (int)ceil(log2(n));
-int tree_size = (1 << (h+1)) - 1;
-*/
 template <typename T>
 class segment_tree {
 private:
 	vector<T> tree;
 	vector<T> lazy;
+	/*
+	H : log(N)(올림)
+	8 -> 3, 2^4-1 = 15
+	9 -> 4, 2^5-1 = 31
+	node 개수 : 2^(H+1) -> 0번 인덱스는 사용하지 않음
+	int h = (int)ceil(log2(n));
+	int tree_size = (1 << (h+1));
+	*/
 	int ary_size, h, tree_size;
 	int qury_left, qury_right;
 	T qury_diff;
@@ -43,14 +40,14 @@ private:
 		}
 	}
 	void _update_range(int node, int start, int end) {
-		_update_lazy(node, start, end);
+		_update_lazy(node, start, end);//lazy값 반영
 		if (qury_left > end || qury_right < start) {
 			return;
 		}
 		if (qury_left <= start && end <= qury_right) {
-			tree[node] += (end - start + 1)*qury_diff;
+			tree[node] += (end - start + 1)*qury_diff;//현재 노드 갱신
 			if (start != end) {
-				lazy[node << 1] += qury_diff;
+				lazy[node << 1] += qury_diff;//자식 전파
 				lazy[(node << 1) + 1] += qury_diff;
 			}
 			return;
@@ -60,7 +57,7 @@ private:
 		tree[node] = tree[node << 1] + tree[(node << 1) + 1];
 	}
 	T _sum(int node, int start, int end) {
-		_update_lazy(node, start, end);
+		_update_lazy(node, start, end);//lazy값 반영
 		if (qury_left > end || qury_right < start) {
 			return 0;
 		}
@@ -73,7 +70,7 @@ private:
 public:
 	segment_tree(vector<T> &ary) : ary_size(ary.size()){
 		h = (int)ceil(log2(ary.size()));
-		tree_size = (1 << (h + 1)) - 1;
+		tree_size = (1 << (h + 1));
 		tree.resize(tree_size);
 		lazy.resize(tree_size);
 		init(ary, 1, 0, ary.size() - 1);
@@ -98,23 +95,15 @@ public:
 	}
 };
 
-
-
-
-
-int solution(vector<int> arr) {
+int solution(vector<double> arr) {
 	int answer = 1;
-	segment_tree<int> tree(arr);
-	tree.update_range(3, 4, 10);
-	tree.update_range(3, 4, 10);
-	tree.update_range(3, 4, 10);
-	tree.update_range(3, 4, 10);
-	tree.update_range(3, 4, 10);
-	return tree.qury(0 ,4);
+	segment_tree<double> tree(arr);
+	//tree.update_range(0, 3, 1);
+	//tree.update_range(0, 2, 1);
+	return tree.qury(0 ,7);
 }
 
-
 int main() {
-	vector<int> arr = { 1, 2, 3, 4, 5 };
+	vector<double> arr = { 0, 1, 2, 3, 4, 5, 6, 7};
 	printf("%d", solution(arr));
 }
