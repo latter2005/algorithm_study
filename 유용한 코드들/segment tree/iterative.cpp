@@ -8,7 +8,6 @@ using namespace std;
 
 
 int tree[MAZ_SIZE * 2];
-vector<int> *arr_ptr;
 int n;
 inline void init(vector<int> &arr) { // 트리 순서가 알고리즘이랑 조금 다름
 	int n = arr.size();
@@ -27,7 +26,6 @@ int query(int l, int r) {  // sum on interval [l, r)
 }
 int solution(vector<int> arr) {
 	int answer = 1;
-	arr_ptr = &arr;
 	n = arr.size();
 
 	init(arr);
