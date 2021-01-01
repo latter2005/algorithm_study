@@ -19,6 +19,15 @@ private:
 	int ary_size, h, tree_size;
 	int qury_left, qury_right;
 	T qury_diff;
+	T init(T ary[], int node, int start, int end) {
+		if (start == end) {
+			return tree[node] = ary[start];
+		}
+		else {
+			return tree[node] = init(ary, node << 1, start, (start + end) >> 1) +
+				init(ary, (node << 1) + 1, ((start + end) >> 1) + 1, end);
+		}
+	}
 	T init(vector<T> &ary, int node, int start, int end) {
 		if (start == end) {
 			return tree[node] = ary[start];
@@ -68,6 +77,13 @@ private:
 			_sum((node << 1) + 1, ((start + end) >> 1) + 1, end);
 	}
 public:
+	segment_tree(T ary[], int size) :ary_size(size) {
+		h = (int)ceil(log2(size));
+		tree_size = (1 << (h + 1));
+		tree.resize(tree_size);
+		lazy.resize(tree_size);
+		init(ary, 1, 0, size - 1);
+	}
 	segment_tree(vector<T> &ary) : ary_size(ary.size()){
 		h = (int)ceil(log2(ary.size()));
 		tree_size = (1 << (h + 1));
