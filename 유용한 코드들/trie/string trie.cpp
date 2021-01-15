@@ -58,6 +58,26 @@ struct Trie {
 		cur_node->finish = true;
 		return false;
 	}
+	bool erase(string key) {
+		int n = key.size();
+		Trie* stack[11];
+		Trie* cur_node = this;
+		for (int i = 0; i < n; i++) {//for(auto &t : key)
+			int cur_idx = key[i] - 'a';
+			if (cur_node->next[cur_idx] == NULL)
+				return false;
+			stack[i] = cur_node;
+			cur_node = cur_node->next[cur_idx];
+		}
+		if (cur_node->finish) {
+			cur_node->count--;
+			cur_node->finish = false;
+			for (int i = 0; i < n; i++)
+				stack[i]->count--;
+			return true;
+		}
+		return false;
+	}
 	int counting(string key) {
 		int n = key.size();
 		Trie* cur_node = this;
@@ -72,11 +92,14 @@ struct Trie {
 };
 
 int main() {
-	vector<string> t = { "asdf", "asdf", "sss" };
+	vector<string> t = { "abdf", "abc", "a" , "at", "avvvv"};
 	Trie trie;
 	bool c;
 	for (auto s : t) {
 		c = trie.find_and_insert(s);
 	}
-	
+	trie.erase("a");
+	trie.erase("abc");
+	trie.erase("asdf");
+
 }
