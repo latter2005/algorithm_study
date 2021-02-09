@@ -1,15 +1,7 @@
 #include <cstdio>
 #include <vector>
-#include <queue>
 #include <cstring>
 using namespace std;
-typedef struct edge {
-	int dist, cost;
-	bool operator<(const edge &t)const {
-		return dist < t.dist;
-	}
-	edge(int d, int c) :dist(d), cost(c) {};
-}edge;
 
 void floyd_warshall(vector<vector<int>> &arr, unsigned dist[][201], int n) {
 	
