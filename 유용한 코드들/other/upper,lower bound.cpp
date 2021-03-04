@@ -6,8 +6,7 @@ void upper() {
 	while (left < right) {
 		mid = (right + left) >> 1;
 		if (t < stack[mid]) right = mid;
-		else if (t != stack[mid]) left = mid + 1;
-		else { right = mid; break; }
+		else left = mid + 1;
 	}
 	printf("%d", right);
 }
@@ -15,12 +14,11 @@ void lower() {
 	int stack[] = { 1, 3, 5, 7, 9, 11, 13 }, top = sizeof(stack) / 4 - 1;
 	int left = 0, right = top, mid, t = 7;
 	while (left < right) {
-		mid = (right + left + 1) >> 1;
-		if (t < stack[mid]) right = mid - 1;
-		else if (t != stack[mid]) left = mid;
-		else { left = mid; break; }
+		mid = (right + left) >> 1;
+		if (t <= stack[mid]) right = mid;
+		else left = mid;
 	}
-	printf("%d", left);
+	printf("%d", right);
 }
 int main() {
 	//upper();
