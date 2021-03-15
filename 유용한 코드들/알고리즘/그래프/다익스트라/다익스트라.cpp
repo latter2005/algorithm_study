@@ -3,12 +3,12 @@
 typedef struct edge {
 	int dist, cost;
 	bool operator<(const edge &t)const {
-		return dist < t.dist;
+		return cost < t.cost;
 	}
 	edge(int d, int c) :dist(d), cost(c) {};
 }edge;
 void dijkstra(vector<edge> vtx[201], unsigned dist[], int start) {
-	priority_queue <edge, vector<edge>, less<edge>> que;
+	priority_queue <edge, vector<edge>> que;
 	que.emplace(start, 0);
 	dist[start] = 0;
 	while (!que.empty()) {
