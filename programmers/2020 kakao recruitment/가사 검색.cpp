@@ -1,43 +1,40 @@
-﻿#include <iostream>
-#include <ㅊstring>
+﻿#include <string>
 #include <vector>
-#include <algorithm>
 #include <map>
+#include <cstring>
+#include <algorithm>
 using namespace std;
+
+
 typedef struct Trie {
-	bool finish;    //끝나는 지점을 표시해줌
-	int count;
-	Trie* next[26];    //26가지 알파벳에 대한 트라이
-	Trie() : finish(false), count(1) {
-		memset(next, 0, sizeof(next));
-	}
-	~Trie() {
-		for (int i = 0; i < 26; i++)
-			if (next[i])
-				delete next[i];
-	}
-	void insert(const char* key) {
-		if (*key == '\0')
-			finish = true;    //문자열이 끝나는 지점일 경우 표시
-		else {
-			int curr = *key - 'a';
-			if (next[curr] == NULL)
-				next[curr] = new Trie();    //탐색이 처음되는 지점일 경우 동적할당
-			else next[curr]->count++;
-			next[curr]->insert(key + 1);    //다음 문자 삽입
+	bool finish = 0;   
+	int count = 0;
+	Trie* next[26] = { 0 };   
+	
+	void insert(string &key) {
+		int n = key.size();
+		Trie* cur_node = this;
+		for (auto c : key) {
+			cur_node->count++;
+
+			if (cur_node->next[c - 'a'] == NULL)
+				cur_node->next[c - 'a'] = new Trie();
+			cur_node = cur_node->next[c - 'a'];
 		}
+		cur_node->count++;
+		cur_node->finish = true;
 	}
-	int find(const char* key) {
-		if (*key == '?') {
-			int result = 0;
-			for (int i = 0; i < 26; i++)
-				if (next[i]) result += next[i]->count;
-			return result;
+	int find(string & key) {
+		int n = key.size();
+		Trie* cur_node = this;
+		for (auto c : key) {
+			if (!cur_node) return 0;
+			else if (c != '?')
+				cur_node = cur_node->next[c - 'a'];
+			else
+				return cur_node->count;
 		}
-		int curr = *key - 'a';
-		if (next[curr] == NULL)return 0;//찾는 값이 존재하지 않음
-		if (*(key + 1) == '?') return next[curr]->count;
-		return next[curr]->find(key + 1); //다음 문자를 탐색
+		return cur_node ? 1 : 0;
 	}
 }Trie;
 
@@ -46,7 +43,7 @@ typedef struct Trie {
 vector<int> solution(vector<string> words, vector<string> queries) {
 	vector<int> answer;
 	map<int, Trie*> list, rev_list;
-	
+
 	for (auto &t : words) {
 		int size = t.size();
 		string rev_t = t;
@@ -55,41 +52,41 @@ vector<int> solution(vector<string> words, vector<string> queries) {
 		auto pos = list.find(size);
 		if (pos == list.end()) {
 			Trie *t_trie = new Trie(), *rev_t_trie = new Trie();
-			t_trie->insert(t.c_str()); rev_t_trie->insert(rev_t.c_str());
-			list[size] = t_trie; rev_list[size] = rev_t_trie;
+			t_trie->insert(t); 
+			list.emplace_hint(pos, size, t_trie);
+
+			rev_t_trie->insert(rev_t);
+			rev_list[size] = rev_t_trie;
 		}
 		else {
-			list[size]->insert(t.c_str());
-			rev_list[size]->insert(rev_t.c_str());
+			pos->second->insert(t);
+			rev_list[size]->insert(rev_t);
 		}
 	}
 	for (auto &qury : queries) {
 		int size = qury.size();
-		if (qury[0] == '?') {
-			if (rev_list.find(size) == rev_list.end()) { answer.push_back(0); continue; }
-			auto target_trie = rev_list[size];
-			reverse(qury.begin(), qury.end());
-			answer.push_back(target_trie->find(qury.c_str()));
+		if (qury[0] != '?') {
+			auto iter = list.find(size);
+			if (iter != list.end()) 
+				answer.push_back(iter->second->find(qury));
+			else 
+				answer.push_back(0);
+			
 		}
 		else {
-			if (list.find(size) == list.end()) { answer.push_back(0); continue; }
-			auto target_trie = list[size];
-			answer.push_back(target_trie->find(qury.c_str()));
+			reverse(qury.begin(), qury.end());
+			auto iter = rev_list.find(size);
+			if (iter != rev_list.end()) 
+				answer.push_back(iter->second->find(qury));
+			else 
+				answer.push_back(0);
 		}
 	}
 	return answer;
 }
-
-
 int main() {
-	vector<string> words = { "frodo", "front", "frost", "frozen", "frame", "kakao" };
-	vector<string> queries = { "fro??", "????o", "fr???", "fro???", "pro?" };
-	auto t = solution(words, queries);
+	solution({ "frodo", "front", "frost", "frozen", "frame", "kakao" }, { "frodo", "????o", "fr???", "fro???", "pro?" });
 }
-
 /*
-{"frodo", "front", "frost", "frozen", "frame", "kakao"}
-{"fro??", "????o", "fr???", "fro???", "pro?"}
-https://jason9319.tistory.com/129 자료구조 트라이 참고
-트라이를 통해 탐색시간 줄임, map 컨테이너로 빠른접근, 메모리 절약
+["frodo", "front", "frost", "frozen", "frame", "kakao"], ["fro??", "????o", "fr???", "fro???", "pro?"]
 */
