@@ -1,8 +1,8 @@
 /*
 union-find : quick-find
 if a, b connected => parent[a] == parent[b]
-find() : O(1)
-union() : O(n)
+is_connected() : O(1)
+connect() : O(n)
 */
 #include <iostream>
 
