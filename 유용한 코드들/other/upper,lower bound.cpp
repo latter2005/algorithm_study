@@ -1,26 +1,30 @@
 #include <cstdio>
 
-void upper() {
-	int stack[] = { 1, 3, 5, 7, 9, 11, 13}, top = sizeof(stack)/4 - 1;
-	int left = 0, right = top, mid, t = 7;
+int upper(int ary[], int left, int right, int val) {
+	if (ary[right] <= val) return right + 1;
+	if (val < ary[left]) return left;
+	int mid;
 	while (left < right) {
 		mid = (right + left) >> 1;
-		if (t < stack[mid]) right = mid;
+		if (val < ary[mid]) right = mid;
 		else left = mid + 1;
 	}
-	printf("%d", right);
+	return right;
 }
-void lower() {
-	int stack[] = { 1, 3, 5, 7, 9, 11, 13 }, top = sizeof(stack) / 4 - 1;
-	int left = 0, right = top, mid, t = 7;
+int lower(int ary[], int left, int right, int val) {
+	if (ary[right] <= val) return right;
+	if (val < ary[left]) return left - 1;
+	int mid;
 	while (left < right) {
 		mid = (right + left) >> 1;
-		if (t <= stack[mid]) right = mid;
-		else left = mid;
+		if (val <= ary[mid]) right = mid;
+		else left = mid + 1;
 	}
-	printf("%d", right);
+	return right;
 }
+
 int main() {
-	//upper();
-	lower();
+	int p[] = { 50, 50, 50, 51, 101 };
+	printf("%d\n", upper(p, 0, 4, 100));
+	printf("%d\n", lower(p, 0, 4, 102));
 }
