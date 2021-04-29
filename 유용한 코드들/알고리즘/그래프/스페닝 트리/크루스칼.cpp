@@ -1,3 +1,9 @@
+/*
+union-find : weighted quick-union + path compression
+
+크루스칼 : 간선 수가 적을 때 적합한 알고리즘
+
+*/
 #include <cstdio>
 
 #include <algorithm>
